@@ -1,0 +1,15 @@
+{
+  "name": "youtube-downloader-proxy",
+  "version": "1.0.0",
+  "description": "Proxy server for YouTube download API.",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "axios": "^1.7.2",
+    "cors": "^2.8.5"
+  }
+}
