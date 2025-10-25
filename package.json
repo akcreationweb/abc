@@ -1,15 +1,17 @@
 {
-  "name": "youtube-downloader-proxy",
+  "name": "yt-mp3-kavi",
   "version": "1.0.0",
-  "description": "Proxy server for YouTube download API.",
+  "description": "YouTube -> MP3 demo using Kavi public API",
   "main": "server.js",
-  "type": "module",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "dependencies": {
-    "express": "^4.19.2",
-    "axios": "^1.7.2",
-    "cors": "^2.8.5"
+    "axios": "^1.4.0",
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=14"
   }
 }
