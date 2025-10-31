@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DL MUSIC | Official Music Hub</title>
+    <link rel="icon" href="https://raw.githubusercontent.com/mybotmybot15-png/Test-web/main/20250912_210649.png" type="image/jpeg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- General and Theming CSS --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Music Theme Color Palette */
+        :root {
+            --primary: #ff0077; /* Vibrant Magenta */
+            --secondary: #00c9ff; /* Neon Blue */
+            --accent: #ffcc00; /* Gold/Yellow */
+            --dark: #0a0a1a; /* Darker Space Blue */
+            --light: #f8f9fa;
+            --gray: #1e1e2d;
+        }
+
+        /* Music Background */
+        body {
+            background: linear-gradient(135deg, var(--dark), #151525);
+            color: var(--light);
+            overflow-x: hidden;
+            background-attachment: fixed;
+            background-image: url('https://images.unsplash.com/photo-1547849884-a10c28303f8f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); 
+            background-size: cover;
+            background-position: center;
+            background-blend-mode: overlay;
+            background-color: rgba(10, 10, 26, 0.9);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        header.scrolled {
+            padding: 10px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            background: rgba(10, 10, 10, 0.95);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo img {
+            height: 50px;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .logo img:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .header-icons a {
+            color: var(--light);
+            font-size: 20px;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .header-icons a:hover {
+            color: var(--accent);
+            transform: scale(1.2);
+        }
+
+        /* Navigation Tabs */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 0 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            letter-spacing: 1px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .tab.active {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            box-shadow: 0 5px 15px rgba(255, 0, 119, 0.4);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Slideshow Styles (Fade Transition) --- */
+        .banner-container {
+            position: relative;
+            height: 400px;
+            overflow: hidden;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            background: var(--dark);
+        }
+
+        .banner-slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            /* Fade Transition */
+            transition: opacity 1.2s ease-in-out; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+             /* Ensure no residual transforms from slide animation */
+            transform: translateX(0) !important; 
+        }
+        
+        .banner-slide.active {
+            opacity: 1;
+            z-index: 10;
+        }
+        
+        .banner-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+            cursor: pointer;
+            /* Zoom transition on the image */
+            transition: transform 5s linear; 
+        }
+        
+        .banner-slide.active img {
+            transform: scale(1.05);
+        }
+        
+        /* Home Tab - Video Grid & Popular Section */
+        .video-grid-container {
+            margin: 30px 0;
+            padding: 0 10px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 30px;
+            background: linear-gradient(to right, var(--accent), var(--light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .video-card {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .video-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .video-info {
+            padding: 15px;
+        }
+
+        .video-info h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: var(--light);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Popular Video Views Style */
+        .video-info p {
+            font-size: 14px;
+            color: var(--secondary); /* Highlight views */
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        /* Channel Stats */
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            padding: 30px 20px;
+            margin: 40px 0;
+            background: linear-gradient(90deg, rgba(255, 0, 119, 0.1), rgba(0, 201, 255, 0.1));
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+            color: var(--accent);
+        }
+
+        .stat-count {
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Welcome Box CSS */
+        .welcome-text {
+            text-align: center;
+            margin: 40px 0;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .welcome-text h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+        }
+
+        .welcome-text p {
+            font-size: 18px;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Media Tab */
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .media-card {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            padding: 30px 20px;
+            cursor: pointer;
+        }
+
+        .media-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .media-icon {
+            font-size: 50px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .media-card:hover .media-icon {
+            transform: scale(1.2);
+        }
+
+        .youtube { color: #FF0000; }
+        .whatsapp { color: #25D366; }
+        .yt-downloader { color: var(--secondary); }
+        .ak-movies { color: var(--primary); }
+        .tiktok { color: var(--light); }
+        .github { color: #6cc644; }
+
+        .media-content h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .media-content p {
+            color: #ccc;
+            font-size: 14px;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(10, 10, 10, 0.9);
+            padding: 30px 0;
+            margin-top: 60px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .footer-content p {
+            font-size: 18px;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .social-icons a {
+            color: var(--light);
+            font-size: 24px;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: var(--accent);
+            transform: scale(1.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .tabs {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .tab {
+                width: 100%;
+                text-align: center;
+                margin: 5px 0;
+            }
+            
+            .stats-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .banner-container {
+                height: 250px;
+            }
+        }
+
+        /* Search functionality */
+        .search-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .search-box {
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            width: 200px;
+            transition: width 0.3s ease;
+        }
+
+        .search-box:focus {
+            width: 250px;
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .search-results-message {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+            display: none;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Scroll Animation Classes */
+        .scroll-element {
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .scroll-up {
+            transform: translateY(50px);
+        }
+
+        .scroll-down {
+            transform: translateY(-50px);
+        }
+
+        .scroll-left {
+            transform: translateX(-50px);
+        }
+
+        .scroll-right {
+            transform: translateX(50px);
+        }
+
+        .scroll-zoom {
+            transform: scale(0.9);
+        }
+
+        .scroll-visible {
+            opacity: 1;
+            transform: translateY(0) translateX(0) scale(1);
+        }
+    </style>
+</head>
+<body>
+    <header id="header">
+        <div class="container header-content">
+            <div class="logo scroll-element scroll-left">
+                <img src="https://raw.githubusercontent.com/mybotmybot15-png/Test-web/main/20250912_210649.png" alt="AK Creations Logo">
+                <h1>DL MUSIC</h1>
+            </div>
+            <div class="header-icons scroll-element scroll-right">
+                <div class="search-container">
+                    <input type="text" class="search-box" placeholder="Search...">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="tabs scroll-element scroll-up">
+            <div class="tab active" data-tab="home">HOME</div>
+            <div class="tab" data-tab="media">LINKS</div>
+            <div class="tab" data-tab="about">ABOUT</div>
+        </div>
+    </div>
+
+    <div class="tab-content active" id="home">
+        <div class="container">
+            <h2 class="section-title scroll-element scroll-up">🎶 Latest Releases</h2>
+            <div class="banner-container scroll-element scroll-zoom" id="latest-videos-slideshow">
+                <div class="spinner"></div>
+                </div>
+
+            <div class="welcome-text scroll-element scroll-up">
+                <h2>WELCOME TO AK RHYTHMS MUSIC HUB</h2>
+                <p>Your ultimate destination for music, tracks, and sound design. Tune in, explore our latest sounds, and groove to the rhythm!</p>
+            </div>
+
+            <div class="stats-container scroll-element scroll-up">
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="fab fa-youtube"></i></div>
+                    <div class="stat-count" id="subs-count">Loading...</div>
+                    <div class="stat-label">Subscribers</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="fas fa-eye"></i></div>
+                    <div class="stat-count" id="views-count">Loading...</div>
+                    <div class="stat-label">Total Views</div>
+                </div>
+            </div>
+            
+            <div class="video-grid-container scroll-element scroll-up">
+                <h2 class="section-title">✨ Popular Tracks</h2>
+                <div class="video-grid" id="popular-videos-grid">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-content" id="media">
+        <div class="container">
+            <p class="search-results-message" id="media-results-message"></p>
+            <div class="media-grid">
+                <div class="media-card searchable-item scroll-element scroll-left" onclick="window.open('https://youtube.com/@sl_ak_gaming_', '_blank')">
+                    <div class="media-icon youtube">
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                    <div class="media-content">
+                        <h3>YouTube Channel</h3>
+                        <p>Listen to our music and tracks</p>
+                    </div>
+                </div>
+                
+                <div class="media-card searchable-item scroll-element scroll-up" onclick="window.open('https://whatsapp.com/channel/0029Vb6heAm2phHNDlpUPK24', '_blank')">
+                    <div class="media-icon whatsapp">
+                        <i class="fab fa-whatsapp"></i>
+                    </div>
+                    <div class="media-content">
+                        <h3>WhatsApp Updates</h3>
+                        <p>Follow our channel for new music alerts</p>
+                    </div>
+                </div>
+                
+                <div class="media-card searchable-item scroll-element scroll-right" onclick="window.open('https://ak-ytdl.vercel.app/', '_blank')">
+                    <div class="media-icon yt-downloader">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <div class="media-content">
+                        <h3>MP3 Converter</h3>
+                        <p>Download audio from our videos</p>
+                    </div>
+                </div>
+                
+                <div class="media-card searchable-item scroll-element scroll-left" onclick="window.open('https://ak-movies.vercel.app/', '_blank')">
+                    <div class="media-icon ak-movies">
+                        <i class="fas fa-ticket-alt"></i>
+                    </div>
+                    <div class="media-content">
+                        <h3>AK Vibe Mixes</h3>
+                        <p>Explore long-form music mixes</p>
+                    </div>
+                </div>
+                
+                <div class="media-card searchable-item scroll-element scroll-up" onclick="window.open('https://tiktok.com/@ak_creation_lk', '_blank')">
+                    <div class="media-icon tiktok">
+                        <i class="fab fa-tiktok"></i>
+                    </div>
+                    <div class="media-content">
+                        <h3>TikTok Clips</h3>
+                        <p>Short music teasers and beats</p>
+                    </div>
+                </div>
+                
+                <div class="media-card searchable-item scroll-element scroll-right" onclick="window.open('https://github.com/akcreationweb', '_blank')">
+                    <div class="media-icon github">
+                        <i class="fab fa-github"></i>
+                    </div>
+                    <div class="media-content">
+                        <h3>GitHub</h3>
+                        <p>Check out our open source sound projects</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-content" id="about">
+        <div class="container">
+            <div class="welcome-text scroll-element scroll-up">
+                <h2>ABOUT AK RHYTHMS</h2>
+                <p>AK Rhythms is a dedicated hub for all things audio and music creation. We produce original tracks, mixes, and soundscapes to enhance your listening experience.</p>
+                <p>Our mission is to share high-quality, inspiring sounds with the world, setting the perfect rhythm for your day.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container footer-content">
+            <p>AK RHYTHMS © 2025</p>
+            <div class="social-icons">
+                <a href="https://github.com/akcreationweb" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="https://youtube.com/@sl_ak_gaming_" target="_blank"><i class="fab fa-youtube"></i></a>
+                <a href="https://tiktok.com/@ak_creation_lk" target="_blank"><i class="fab fa-tiktok"></i></a>
+                <a href="https://whatsapp.com/channel/0029Vb6heAm2phHNDlpUPK24" target="_blank"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // YouTube API Configuration
+        const apiKey = 'AIzaSyBhSFCqIm01PHa6CNG8pcqf6kSEFlz4t6E';
+        const channelId = 'UCT271L3ir6Yq3WZcMkQaj8Q'; // This is the ID used in your code, assuming it's correct for AK RHYTHMS
+        
+        // Tab switching functionality
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
+            
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            setTimeout(checkScroll, 100);
+        }
+
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                switchTab(tab.dataset.tab);
+            });
+        });
+
+        // Helper function to format large numbers
+        function formatNumber(num) {
+            if (num === null || num === undefined) return 'N/A';
+            return new Intl.NumberFormat().format(num);
+        }
+
+        // --- Slideshow Logic (Fade Animation) ---
+        let slideshowInterval;
+        let currentSlide = 0;
+
+        function startSlideshow(slides) {
+            const container = document.getElementById('latest-videos-slideshow');
+            if (slides.length === 0) return;
+
+            function showSlide(n) {
+                const allSlides = container.querySelectorAll('.banner-slide');
+                
+                // Remove active class (fade out)
+                allSlides.forEach(slide => slide.classList.remove('active'));
+                
+                // Calculate the next slide index
+                currentSlide = (n + allSlides.length) % allSlides.length;
+                
+                // Add active class to the current slide to trigger the fade in
+                allSlides[currentSlide].classList.add('active');
+            }
+            
+            // Initial display
+            showSlide(0);
+
+            // Auto-advance
+            if (slideshowInterval) clearInterval(slideshowInterval);
+            
+            // Interval is 5000 milliseconds (5 seconds)
+            slideshowInterval = setInterval(() => {
+                showSlide(currentSlide + 1);
+            }, 5000); 
+        }
+        // --- END Slideshow Logic ---
+
+
+        // Function to fetch Channel Statistics
+        function fetchChannelStats() {
+            fetch(`https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${channelId}&key=${apiKey}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.items && data.items.length > 0) {
+                        const stats = data.items[0].statistics;
+                        const subs = formatNumber(stats.subscriberCount);
+                        const views = formatNumber(stats.viewCount);
+                        
+                        document.getElementById('subs-count').textContent = subs;
+                        document.getElementById('views-count').textContent = views;
+                    } else {
+                        document.getElementById('subs-count').textContent = 'N/A';
+                        document.getElementById('views-count').textContent = 'N/A';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching channel stats:', error);
+                    document.getElementById('subs-count').textContent = 'Error';
+                    document.getElementById('views-count').textContent = 'Error';
+                });
+        }
+        
+        // Function to fetch and display videos (for Latest/Slideshow and Popular)
+        async function fetchAndDisplayVideos(containerId, maxResults, order, type) {
+            const container = document.getElementById(containerId);
+            const isSlideshow = (containerId === 'latest-videos-slideshow');
+            
+            // Show loading spinner for all modes
+            if (container) {
+                 container.innerHTML = `<div class="spinner"></div>`;
+            } else {
+                return; // Exit if container doesn't exist
+            }
+            
+            // --- UPDATED: Use 'viewCount' for popular videos ---
+            const videoOrder = (order === 'popular') ? 'viewCount' : 'date'; 
+            // ----------------------------------------------------
+            
+            // maxResults is 4 for latest videos and 5 for popular tracks 
+            const actualMaxResults = (type === 'Latest') ? 4 : 5;
+            const searchUrl = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&type=video&order=${videoOrder}&maxResults=${actualMaxResults}`;
+
+            try {
+                const searchResponse = await fetch(searchUrl);
+                if (!searchResponse.ok) throw new Error('Search failed');
+                const searchData = await searchResponse.json();
+
+                if (!searchData.items || searchData.items.length === 0) {
+                    container.innerHTML = `<p style="text-align: center; padding: 20px;">No ${type} videos found.</p>`;
+                    return;
+                }
+                
+                // Get Video IDs for detailed stats (Views)
+                const videoIds = searchData.items.map(item => item.id.videoId).join(',');
+                
+                // Fetch video details (including views)
+                const detailsUrl = `https://www.googleapis.com/youtube/v3/videos?key=${apiKey}&id=${videoIds}&part=snippet,statistics`;
+                const detailsResponse = await fetch(detailsUrl);
+                if (!detailsResponse.ok) throw new Error('Details fetch failed');
+                const detailsData = await detailsResponse.json();
+
+                const videoDetailsMap = new Map();
+                detailsData.items.forEach(item => {
+                    videoDetailsMap.set(item.id, {
+                        title: item.snippet.title.replace(/&amp;/g, '&'),
+                        thumbnail: item.snippet.thumbnails.medium.url,
+                        views: item.statistics.viewCount ? formatNumber(item.statistics.viewCount) : 'N/A'
+                    });
+                });
+
+                container.innerHTML = '';
+                const videosToDisplay = searchData.items.map(item => ({
+                    ...videoDetailsMap.get(item.id.videoId),
+                    videoId: item.id.videoId
+                }));
+                
+                const finalVideos = videosToDisplay; 
+
+                if (isSlideshow) {
+                    // Slideshow logic: uses all 4 fetched videos for the rotation
+                    finalVideos.forEach((video, index) => {
+                        const videoElement = document.createElement('div');
+                        // No active class initially, as startSlideshow handles the first slide
+                        videoElement.className = `banner-slide scroll-element scroll-up`;
+                        videoElement.setAttribute('onclick', `window.open('https://www.youtube.com/watch?v=${video.videoId}', '_blank')`);
+
+                        // Only Thumbnail is used in the inner HTML
+                        videoElement.innerHTML = `
+                            <img src="${video.thumbnail}" alt="${video.title}">
+                        `;
+                        container.appendChild(videoElement);
+                    });
+                    startSlideshow(finalVideos);
+                } else {
+                    // Popular grid logic 
+                    finalVideos.forEach(video => {
+                        const videoElement = document.createElement('div');
+                        videoElement.className = 'video-card searchable-item scroll-element scroll-up';
+                        
+                        videoElement.innerHTML = `
+                            <img src="${video.thumbnail}" 
+                                 alt="${video.title}"
+                                 onclick="window.open('https://www.youtube.com/watch?v=${video.videoId}', '_blank')">
+                            <div class="video-info">
+                                <h3>${video.title}</h3>
+                                <p>Views: ${video.views}</p>
+                            </div>
+                        `;
+                        container.appendChild(videoElement);
+                    });
+                }
+                
+                checkScroll();
+
+            } catch (error) {
+                console.error(`Error fetching ${type} videos:`, error);
+                container.innerHTML = `<p style="text-align: center; padding: 20px; color: var(--accent);">Error loading ${type} videos. Please try again later.</p>`;
+            }
+        }
+
+        // Initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchChannelStats();
+            // Fetching 4 latest videos for the slideshow
+            fetchAndDisplayVideos('latest-videos-slideshow', 4, 'latest', 'Latest'); 
+            // Fetching 5 popular videos for the grid (uses maxResults=5 internally in the function)
+            fetchAndDisplayVideos('popular-videos-grid', 5, 'popular', 'Popular'); 
+            checkScroll();
+        });
+
+
+        // Search functionality and Scroll animations remain the same as previous versions
+        
+        const searchBox = document.querySelector('.search-box');
+        
+        searchBox.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                searchContent();
+            }
+        });
+
+        function searchContent() {
+            const searchTerm = searchBox.value.toLowerCase().trim();
+            const searchableItems = document.querySelectorAll('.searchable-item');
+            let matchFound = false;
+
+            if (searchTerm === '') {
+                const activeTabId = document.querySelector('.tab-content.active').id;
+                document.querySelectorAll(`#${activeTabId} .searchable-item`).forEach(item => {
+                    item.style.display = 'block';
+                });
+                const resultsMessage = document.getElementById(`${activeTabId}-results-message`);
+                if (resultsMessage) {
+                    resultsMessage.style.display = 'none';
+                }
+                checkScroll();
+                return;
+            }
+
+            searchableItems.forEach(item => {
+                const itemText = item.textContent.toLowerCase();
+                const parentTabContent = item.closest('.tab-content');
+                
+                if (parentTabContent && parentTabContent.classList.contains('active')) {
+                     if (itemText.includes(searchTerm)) {
+                        item.style.display = 'block';
+                        matchFound = true;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                }
+            });
+
+            ['media', 'home'].forEach(tabId => {
+                const tabContent = document.getElementById(tabId);
+                const resultsMessage = document.getElementById(`${tabId}-results-message`);
+                if (!resultsMessage || !tabContent.classList.contains('active')) return;
+
+                const visibleItems = tabContent.querySelectorAll('.searchable-item[style*="block"]');
+                
+                if (visibleItems.length === 0) {
+                    resultsMessage.textContent = `No results found for "${searchTerm}"`;
+                    resultsMessage.style.display = 'block';
+                } else {
+                    resultsMessage.style.display = 'none';
+                }
+            });
+
+            if (!matchFound && document.querySelector('.tab-content.active').id !== 'about') {
+                const activeTabId = document.querySelector('.tab-content.active').id;
+                const resultsMessage = document.getElementById(`${activeTabId}-results-message`);
+                if (resultsMessage) {
+                    resultsMessage.textContent = `No results found for "${searchTerm}"`;
+                    resultsMessage.style.display = 'block';
+                }
+            }
+            checkScroll();
+        }
+
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        function checkScroll() {
+            const scrollElements = document.querySelectorAll('.scroll-element');
+            
+            scrollElements.forEach(el => {
+                const parentTabContent = el.closest('.tab-content');
+                if (parentTabContent && !parentTabContent.classList.contains('active')) {
+                    el.classList.remove('scroll-visible');
+                    return;
+                }
+
+                const elementTop = el.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    el.classList.add('scroll-visible');
+                } else {
+                    el.classList.remove('scroll-visible');
+                }
+            });
+        }
+
+        window.addEventListener('load', checkScroll);
+        window.addEventListener('scroll', checkScroll);
+        
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                setTimeout(checkScroll, 100);
+            });
+        });
+
+    </script>
+</body>
+</html>
